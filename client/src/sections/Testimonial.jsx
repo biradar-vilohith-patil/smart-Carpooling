@@ -3,7 +3,7 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar"
 const Testimonial = () => {
   const feedback = [
     {
-      desc: "Smart Carpooling made my daily commute a breeze! The app is user-friendly, and I've most some wonderfuli people through carpooling. Thank you RideShare for providing such a fantastic service.",
+      desc: "Smart Carpooling made my daily commute a breeze! The app is user-friendly, and I've met some wonderfull people through carpooling. Thank you Smart Carpooling for providing such a fantastic service.",
       img: "https://dummyimage.com/106x106",
       user: "Sam David Paul",
       prof: "UI Developer"
