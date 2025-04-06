@@ -50,13 +50,13 @@ const Footer = () => {
           </div>
         </div>
         <div>
-{/*           <span className="text-base font-bold text-foreground">Social</span>
+          <span className="text-base font-bold text-foreground">Social</span>
           <div className="flex items-center mt-2 space-x-3">
             <a href="/"><Twitter /></a>
             <a href="/"><Instagram /></a>
-            <a href="/"><Facebook /></a> */}
+            <a href="/"><Facebook /></a>
           </div>
-{/*           <p className="mt-4 text-sm">Follow us on social media</p> */}
+          <p className="mt-4 text-sm">Follow us on social media</p>
         </div>
       </div>
       <div className="flex flex-col-reverse justify-between pt-5 pb-10 border-t lg:flex-row">
