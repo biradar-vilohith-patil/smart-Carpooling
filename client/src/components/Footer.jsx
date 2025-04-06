@@ -19,7 +19,7 @@ const Footer = () => {
           <div className="flex">
             <p className="mr-1 text-foreground">Phone:</p>
             <a
-              href="tel:850-123-5021"
+              href="7897897897"
               aria-label="Our phone"
               title="Our phone"
             >
@@ -29,7 +29,7 @@ const Footer = () => {
           <div className="flex">
             <p className="mr-1 text-foreground">Email:</p>
             <a
-              href="mailto:info@rideshare.mail"
+              href="complaints.smartcarpooling@gmail.com"
               aria-label="Our email"
               title="Our email"
             >
