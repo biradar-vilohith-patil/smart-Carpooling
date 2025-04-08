@@ -9,7 +9,8 @@ import userRoute from "./routes/user.routes.js"
 import rideRoute from "./routes/ride.routes.js"
 
 const app = express()
-const PORT = 8080;
+const PORT = process.env.PORT || 5000;
+
 
 dotenv.config()
 
