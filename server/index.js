@@ -33,13 +33,12 @@ app.use((req, res, next) => {
   next(); 
 })
 app.use(cors({
-    origin: true,
-    // origin: "http://localhost:5173",
+    origin: "https://smaartcarpooling.vercel.app", // 👈 allow only your frontend
     credentials: true,
-    allowedMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],        //access-control-allow-credentials:true
-    optionSuccessStatus:200
-  }
-))
+    allowedMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    optionSuccessStatus: 200
+}));
+
 app.use(cookieParser())
 app.use(express.json())
 
