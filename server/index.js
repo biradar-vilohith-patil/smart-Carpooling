@@ -61,3 +61,7 @@ app.listen(PORT, () => {
   connectDB()
   console.log(`Connected to backend on PORT: ${PORT}`)
 })
+
+app.get("/api/ping", (req, res) => {
+  res.send("Backend is live 🚀");
+});
