@@ -38,6 +38,8 @@ app.use(cors({
     allowedMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     optionSuccessStatus: 200
 }));
+app.options('*', cors());
+
 
 app.use(cookieParser())
 app.use(express.json())
