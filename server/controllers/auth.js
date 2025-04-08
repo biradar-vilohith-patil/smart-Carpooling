@@ -23,7 +23,9 @@ export const register = async (req, res, next) => {
       httpOnly: true,
       secure: true,
       maxAge: 24 * 60 * 60 * 1000, // 1 day expiration
-      sameSite: 'strict' 
+      sameSite: "none",
+    secure: true
+ 
     };
 
     const { password, isAdmin, ...otherDetails } = newUser._doc;
