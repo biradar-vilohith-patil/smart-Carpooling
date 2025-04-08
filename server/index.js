@@ -1,69 +1,71 @@
-import express from "express"
-import dotenv from "dotenv"
-import mongoose from "mongoose"
-import cors from "cors"
-import cookieParser from "cookie-parser"
-import path from 'path'
-import authRoute from "./routes/auth.routes.js"
-import userRoute from "./routes/user.routes.js"
-import rideRoute from "./routes/ride.routes.js"
+import express from "express";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import path from 'path';
 
-const app = express()
+import authRoute from "./routes/auth.routes.js";
+import userRoute from "./routes/user.routes.js";
+import rideRoute from "./routes/ride.routes.js";
+
+dotenv.config(); // ✅ load env vars first
+
+const app = express();
 const PORT = process.env.PORT || 5000;
 
-
-dotenv.config()
-
-const connectDB = (url) => {
+// ✅ Connect to MongoDB Atlas
+const connectDB = () => {
   mongoose.set("strictQuery", true);
+  console.log("Connecting to Mongo URI:", process.env.MONGO); // helpful log
 
   mongoose
-    .connect(process.env.MONGO)
-    .then(() => console.log("Database connected"))
-    .catch((error) => console.log(error));
+    .connect(process.env.MONGO, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    })
+    .then(() => console.log("✅ MongoDB connected"))
+    .catch((error) => {
+      console.error("❌ MongoDB connection failed:", error);
+      process.exit(1); // exit if DB fails
+    });
 };
 
-//middlewares
-// app.use(express.static(path.join(__dirname, '../clientbuild')));
-// app.get("*", function(req, res) {
-//   return res.sendFile(path.resolve(__dirname, '../client/dist', 'index.html'));
-// });
-app.use((req, res, next) => {
-  console.log(`${req.method} ${req.url}`);
-  next(); 
-})
+// ✅ CORS for frontend on Vercel
 app.use(cors({
-    origin: "https://smartcarpooling.vercel.app",
-    credentials: true,
-    allowedMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    optionSuccessStatus: 200
+  origin: process.env.ORIGIN, // 💡 use .env to manage CORS origin
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
 }));
-app.options('*', cors());
+app.options("*", cors()); // handle preflight
 
+// ✅ Other Middlewares
+app.use(cookieParser());
+app.use(express.json());
 
-app.use(cookieParser())
-app.use(express.json())
-
+// ✅ API Routes
 app.use("/api/users", userRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/rides", rideRoute);
 
-
-app.use((err, req, res, next)=>{
+// ✅ Error Handler
+app.use((err, req, res, next) => {
   const errorStatus = err.status || 500;
   const errorMessage = err.message || "Something went wrong";
   return res.status(errorStatus).json({
     success: false,
-    status: err.status,
-    error: errorMessage
-  })
-})
+    status: errorStatus,
+    message: errorMessage
+  });
+});
 
-app.listen(PORT, () => {
-  connectDB()
-  console.log(`Connected to backend on PORT: ${PORT}`)
-})
-
+// ✅ Ping route
 app.get("/api/ping", (req, res) => {
   res.send("Backend is live 🚀");
+});
+
+// ✅ Start server only after DB is connected
+app.listen(PORT, () => {
+  connectDB();
+  console.log(`✅ Server running on port ${PORT}`);
 });
