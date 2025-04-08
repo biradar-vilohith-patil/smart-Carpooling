@@ -33,7 +33,7 @@ app.use((req, res, next) => {
   next(); 
 })
 app.use(cors({
-    origin: "https://smaartcarpooling.vercel.app", // 👈 allow only your frontend
+    origin: "https://smartcarpooling.vercel.app",
     credentials: true,
     allowedMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     optionSuccessStatus: 200
