@@ -5,20 +5,17 @@ const Testimonial = () => {
     {
       desc: "Smart Carpooling made my daily commute a breeze! The app is user-friendly, and I've met some wonderfull people through carpooling. Thank you Smart Carpooling for providing such a fantastic service.",
       img: "https://dummyimage.com/106x106",
-      user: "Sam David Paul",
-      prof: "UI Developer"
+      
     },
     {
       desc: "Ever since I started using Smart Carpooling, my daily commute has transformed into a seamless and enjoyable experience. The convenience and reliability of this app have truly exceeded my expectations. The user-friendly interface makes booking a ride a breeze.",
       img: "https://dummyimage.com/106x106",
-      user: "Backend Bhargav",
-      prof: "Backend Developer"
+      
     },
     {
       desc: "I just had to share my recent experience with Smart Carpooling because it has truly been a game-changer for me! From the easy sign-up process to the consistently reliable service, this app has quickly become my go-to for hassle-free transportation.",
       img: "https://dummyimage.com/106x106",
-      user: "Backend Bhargav",
-      prof: "Backend Developer"
+     
     }
   ]
   return (
@@ -37,8 +34,8 @@ const Testimonial = () => {
                     <AvatarImage src={t.img} />
                   </Avatar>
                   <span className="flex-grow flex flex-col pl-4">
-                    <span className="title-font font-semibold text-foreground group-hover:text-primary-foreground">{t.user}</span>
-                    <span className="text-sm">{t.prof}</span>
+                    <span className="title-font font-semibold text-foreground group-hover:text-primary-foreground"></span>
+                    <span className="text-sm"></span>
                   </span>
                 </a>
               </div>
