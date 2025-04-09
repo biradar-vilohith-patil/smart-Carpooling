@@ -8,5 +8,7 @@ router.get("/", verifyAdmin, getAllUsers)
 router.get("/:id", verifyUser, getUser)
 router.patch("/:id", verifyUser, updateUser)
 router.delete("/:id", verifyUser, deleteUser)
+router.patch("/:id", verifyToken, updateUser);
+
 
 export default router
