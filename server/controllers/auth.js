@@ -23,8 +23,8 @@ export const register = async (req, res, next) => {
       httpOnly: true,
       secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000, // 1 day expiration
-      sameSite: "None",
-      secure: true
+      secure: true,
+      sameSite: "None"
  
     };
 
@@ -51,8 +51,9 @@ export const login = async(req, res, next)=>{
       httpOnly: true,
       secure: true,
       maxAge: 7*24 * 60 * 60 * 1000, // 1 day expiration
-      sameSite: "None",
-      secure: true
+      secure: true,
+      sameSite: "None"
+      
 
     };
 
@@ -72,6 +73,7 @@ export const logout = async (req, res, next) => {
     res.clearCookie("accessToken", {
       httpOnly: true,
       secure: true,
+      sameSite : "None"
     });
     res.status(200).json({ message: "Logged out successfully" });
   } catch (err) {
