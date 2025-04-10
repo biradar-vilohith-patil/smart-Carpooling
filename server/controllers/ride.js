@@ -32,21 +32,25 @@ const findRides = async (req, res, next) => {
       return res.status(400).json({ message: 'Please provide all the details' });
     }
 
-    const searchDate = new Date(date);
-    const startOfDay = new Date(searchDate.setHours(0, 0, 0, 0));
-    const endOfDay = new Date(searchDate.setHours(23, 59, 59, 999));
+     console.log("Query Received:", { from, to, seat, date });
 
+const searchDate = new Date(date);
+const startOfDay = new Date(searchDate.setHours(0, 0, 0, 0));
+const endOfDay = new Date(searchDate.setHours(23, 59, 59, 999));
+
+console.log("Mongo Date Range:", startOfDay.toISOString(), "to", endOfDay.toISOString());
     const rides = await Ride.find({
       'origin.place': new RegExp(from, 'i'),
       'destination.place': new RegExp(to, 'i'),
       'availableSeats': { $gte: parseInt(seat) },
       'startTime': { $gte: startOfDay, $lt: endOfDay }
     }).populate('creator', 'name profilePicture stars').lean();
-
     res.status(200).json({ success: true, rides });
   } catch (err) {
     next(err);
   }
+ 
+
 };
 
 
