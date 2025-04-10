@@ -1,10 +1,10 @@
-# RideShare--CarpoolingApp
+# SmartCarpooling--A Web app
 
 Carpooling web application made using MERN Stack.
 
 ## RideShare
 
-RideShare is a ride-sharing app that connects people heading to the same destination, allowing them to share rides and save money, reduce traffic, and protect the environment.
+SmartCarpooling is a ride-sharing app that connects people heading to the same destination, allowing them to share rides and save money, reduce traffic, and protect the environment.
 
 - [Api Documentation](https://documenter.getpostman.com/view/32434659/2s9YymFjCa#e3c94f2d-c0eb-424a-982c-fc94fef0d286)
 - [Deployed Api](https://rideshare-03wo.onrender.com)
@@ -37,7 +37,6 @@ RideShare is a ride-sharing app that connects people heading to the same destina
 - [Express.js](https://www.npmjs.com/package/express) - For handling and routing HTTP requests.
 - [Mongoose](https://mongoosejs.com/) - For modeling and mapping MongoDB data to JavaScript.
 - [JSON Web Token (jsonwebtoken)](https://www.npmjs.com/package/jsonwebtoken) - For authentication.
-- [Bcrypt.js](https://www.npmjs.com/package/bcryptjs) - For data encryption.
 - [Dotenv](https://www.npmjs.com/package/dotenv) - Zero-dependency module to load environment variables.
 - [CORS](https://www.npmjs.com/package/cors) - Middleware for enabling CORS.
 - [Multer](https://www.npmjs.com/package/multer) - Middleware for uploading files.
