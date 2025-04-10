@@ -24,34 +24,27 @@ export const getAllRides = async (req, res, next) => {
 }
 
 
-const findRides = async (req, res, next) => {
+export const findRides = async (req, res, next) => {
   try {
-    const { from, to, seat, date } = req.query;
+    const { origin, destination, time } = req.query;
 
-    if (!from || !to || !seat || !date) {
-      return res.status(400).json({ message: 'Please provide all the details' });
+    const query = {
+      "origin.place": { $regex: origin, $options: "i" },
+      "destination.place": { $regex: destination, $options: "i" },
+    };
+
+    if (time) {
+      const selectedTime = new Date(time);
+      query.startTime = { $gte: selectedTime }; // rides after or at this time
     }
 
-     console.log("Query Received:", { from, to, seat, date });
-
-const searchDate = new Date(date);
-const startOfDay = new Date(searchDate.setHours(0, 0, 0, 0));
-const endOfDay = new Date(searchDate.setHours(23, 59, 59, 999));
-
-console.log("Mongo Date Range:", startOfDay.toISOString(), "to", endOfDay.toISOString());
-    const rides = await Ride.find({
-      'origin.place': new RegExp(from, 'i'),
-      'destination.place': new RegExp(to, 'i'),
-      'availableSeats': { $gte: parseInt(seat) },
-      'startTime': { $gte: startOfDay, $lt: endOfDay }
-    }).populate('creator', 'name profilePicture stars').lean();
-    res.status(200).json({ success: true, rides });
+    const rides = await Ride.find(query);
+    res.status(200).json(rides);
   } catch (err) {
     next(err);
   }
- 
-
 };
+
 
 
 export const joinRide = async (req, res, next) =>{
