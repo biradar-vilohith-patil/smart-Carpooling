@@ -23,29 +23,42 @@ export const getAllRides = async (req, res, next) => {
   }
 }
 
+
 export const findRides = async (req, res, next) => {
   try {
     const { from, to, seat, date } = req.query;
-    
+
     if (!from || !to || !seat || !date) {
-        return res.status(400).json({ message: 'Please provide all the details' });
+      return res.status(400).json({ message: "Please provide all the details" });
     }
-    const searchDate = new Date(date)
-    searchDate.setHours(0, 0, 0, 0); // Set to midnight of the specified date
+
+    const seatsRequired = parseInt(seat); // 🔥 convert to number
+    if (isNaN(seatsRequired)) {
+      return res.status(400).json({ message: "Invalid seat value" });
+    }
+
+    // 🔥 Set range from midnight to midnight+24h of the selected date
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date(startOfDay);
+    endOfDay.setDate(endOfDay.getDate() + 1);
 
     const rides = await Ride.find({
-        'origin.place': new RegExp(from, 'i'),
-        'destination.place': new RegExp(to, 'i'),
-        'availableSeats': { $gte: seat},
-        'startTime': { $gte: searchDate.toISOString(), $lt: new Date(searchDate.getTime() + 24 * 60 * 60 * 1000).toISOString() } // Filter rides up to next midnight
+      "origin.place": { $regex: from, $options: "i" },
+      "destination.place": { $regex: to, $options: "i" },
+      "availableSeats": { $gte: seatsRequired },
+      "startTime": { $gte: startOfDay, $lt: endOfDay }
     })
-    .populate('creator', 'name profilePicture stars') 
-    .lean(); 
+      .populate("creator", "name profilePicture stars")
+      .lean();
+
     res.status(200).json({ success: true, rides });
   } catch (err) {
     next(err);
   }
-}
+};
+
 
 export const joinRide = async (req, res, next) =>{
   try{
