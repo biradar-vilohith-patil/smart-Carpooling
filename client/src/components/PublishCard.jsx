@@ -9,7 +9,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { Toaster } from "./ui/sonner";
-import { toast } from "sonner";
+import { toast } from "sonner"; 
 import LocationAutocomplete from "@/components/LocationAutocomplete";
 
 const apiUri = import.meta.env.VITE_REACT_API_URI;
