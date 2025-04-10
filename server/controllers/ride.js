@@ -30,7 +30,7 @@ export const findRides = async (req, res, next) => {
 
     const query = {
       "origin.place": { $regex: origin, $options: "i" },
-      "destination.place": { $regex: destination, $options: "i" },
+      "destination.place": { $regex: destination, $options: "i" },  
     };
 
     if (time) {
