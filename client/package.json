@@ -41,7 +41,11 @@
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.22.4"
+    "axios": "^1.8.4",
+    "leaflet": "^1.9.4",
+    "react-leaflet": "^5.0.0"
   },
+  
   "devDependencies": {
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
