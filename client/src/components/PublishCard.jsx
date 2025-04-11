@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 import { Minus, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import { Toaster } from "./ui/sonner";
-import { toast } from "sonner"; 
-import LocationAutocomplete from "@/components/LocationAutocomplete";
+import { toast } from "sonner";
+import OSMAutocomplete from "@/components/OSMAutocomplete";
 
 const apiUri = import.meta.env.VITE_REACT_API_URI;
 
@@ -18,7 +18,7 @@ const formSchema = z.object({
   seat: z.number().min(1).max(10),
   price: z.number().nonnegative(),
   startTime: z.date().min(new Date()),
-  endTime: z.date().min(new Date()),
+  endTime: z.date().min(new Date())
 });
 
 const PublishCard = () => {
@@ -32,7 +32,6 @@ const PublishCard = () => {
     },
   });
 
-  // 👇 NEW: Origin & Destination location objects
   const [origin, setOrigin] = useState(null);
   const [destination, setDestination] = useState(null);
 
@@ -47,17 +46,16 @@ const PublishCard = () => {
         availableSeats: data.seat,
         origin: {
           place: origin.address,
-          coordinates: [origin.lat, origin.lng],
+          coordinates: [origin.lat, origin.lng]
         },
         destination: {
           place: destination.address,
-          coordinates: [destination.lat, destination.lng],
+          coordinates: [destination.lat, destination.lng]
         },
         startTime: data.startTime,
         endTime: data.endTime,
-        price: data.price,
+        price: data.price
       };
-
       await axios.post(`${apiUri}/rides`, body, { withCredentials: true });
       toast("The ride has been created");
       form.reset();
@@ -74,13 +72,17 @@ const PublishCard = () => {
         <CardTitle>Create a Ride</CardTitle>
         <CardDescription>Publish your ride with just one click.</CardDescription>
       </CardHeader>
-
       <CardContent>
-        <LocationAutocomplete placeholder="Enter origin" onSelect={setOrigin} />
-        <LocationAutocomplete placeholder="Enter destination" onSelect={setDestination} />
+
+        {/* Autocomplete inputs */}
+        <div className="space-y-2 mb-4">
+          <OSMAutocomplete placeholder="Enter Origin" onSelect={setOrigin} />
+          <OSMAutocomplete placeholder="Enter Destination" onSelect={setDestination} />
+        </div>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="grid w-full items-center gap-4 mt-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="grid w-full items-center gap-4">
+
             <div className="flex gap-24">
               <FormField
                 control={form.control}
@@ -103,6 +105,7 @@ const PublishCard = () => {
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={form.control}
                 name="price"
@@ -125,11 +128,9 @@ const PublishCard = () => {
                 <FormItem className="flex flex-col space-y-1.5">
                   <FormLabel>Departure Time</FormLabel>
                   <FormControl>
-                    <Input
-                      type="datetime-local"
+                    <Input type="datetime-local"
                       value={field.value ? new Date(field.value).toISOString().slice(0, 16) : ""}
-                      onChange={(e) => field.onChange(new Date(e.target.value))}
-                    />
+                      onChange={(e) => field.onChange(new Date(e.target.value))} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -143,11 +144,9 @@ const PublishCard = () => {
                 <FormItem className="flex flex-col space-y-1.5">
                   <FormLabel>Arrival Time</FormLabel>
                   <FormControl>
-                    <Input
-                      type="datetime-local"
+                    <Input type="datetime-local"
                       value={field.value ? new Date(field.value).toISOString().slice(0, 16) : ""}
-                      onChange={(e) => field.onChange(new Date(e.target.value))}
-                    />
+                      onChange={(e) => field.onChange(new Date(e.target.value))} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
