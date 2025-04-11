@@ -9,7 +9,7 @@ const MapView = ({ origin, destination }) => {
     iconSize: [25, 41],
     iconAnchor: [12, 41],
   });
-
+  
   return (
     <MapContainer center={[center.lat, center.lng]} zoom={6} scrollWheelZoom={false} style={{ height: "300px", width: "100%" }}>
       <TileLayer
