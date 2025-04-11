@@ -11,6 +11,7 @@ import { z } from "zod";
 import { Toaster } from "./ui/sonner";
 import { toast } from "sonner";
 import OSMAutocomplete from "@/components/OSMAutocomplete";
+import MapView from "@/components/MapView";
 
 const apiUri = import.meta.env.VITE_REACT_API_URI;
 
@@ -66,22 +67,41 @@ const PublishCard = () => {
     }
   };
 
+  const useCurrentLocation = () => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      setOrigin({
+        address: "Your Location",
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      });
+    }, (err) => {
+      console.error("Geolocation error:", err);
+      toast("Failed to get your location");
+    });
+  };
+
   return (
-    <Card className="w-[350px]">
+    <Card className="w-full max-w-md">
       <CardHeader>
         <CardTitle>Create a Ride</CardTitle>
         <CardDescription>Publish your ride with just one click.</CardDescription>
       </CardHeader>
       <CardContent>
 
-        {/* Autocomplete inputs */}
         <div className="space-y-2 mb-4">
-          <OSMAutocomplete placeholder="Enter Origin" onSelect={setOrigin} />
+          <div className="flex gap-2 items-center">
+            <OSMAutocomplete placeholder="Enter Origin" onSelect={setOrigin} />
+            <Button type="button" variant="outline" onClick={useCurrentLocation}>
+              Use My Location
+            </Button>
+          </div>
           <OSMAutocomplete placeholder="Enter Destination" onSelect={setDestination} />
         </div>
 
+        <MapView origin={origin} destination={destination} />
+
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="grid w-full items-center gap-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="grid w-full items-center gap-4 mt-4">
 
             <div className="flex gap-24">
               <FormField
