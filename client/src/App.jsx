@@ -8,7 +8,7 @@ import SearchPage from './pages/SearchPage'
 import Error from './pages/Error'
 import RideDetail from './pages/RideDetail'
 import Profile from './pages/Profile'
-import 'leaflet/dist/leaflet.css';
+import 'leaflet/dist/leaflet.css?inline';
 
 function App() {
 
