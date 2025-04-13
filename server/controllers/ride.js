@@ -24,26 +24,41 @@ export const getAllRides = async (req, res, next) => {
 }
 
 
+
 export const findRides = async (req, res, next) => {
   try {
-    const { origin, destination, time } = req.query;
+    const { origin, destination, time, seats } = req.query;
 
-    const query = {
-      "origin.place": { $regex: origin, $options: "i" },
-      "destination.place": { $regex: destination, $options: "i" },  
-    };
+    const query = {};
 
+    if (origin) {
+      query["origin.place"] = { $regex: origin, $options: "i" };
+    }
+    if (destination) {
+      query["destination.place"] = { $regex: destination, $options: "i" };
+    }
     if (time) {
       const selectedTime = new Date(time);
-      query.startTime = { $gte: selectedTime }; // rides after or at this time
+      const endTime = new Date(selectedTime.getTime() + 2 * 60 * 60 * 1000); // +2 hours
+      query.startTime = {
+        $gte: selectedTime,
+        $lt: endTime
+      };
+    }
+    if (seats) {
+      query.availableSeats = { $gte: parseInt(seats) };
     }
 
-    const rides = await Ride.find(query);
+    const rides = await Ride.find(query)
+      .populate("creator", "name profilePicture stars")
+      .lean();
+
     res.status(200).json(rides);
   } catch (err) {
     next(err);
   }
 };
+
 
 
 
