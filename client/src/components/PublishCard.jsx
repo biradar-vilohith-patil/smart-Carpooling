@@ -11,6 +11,7 @@ import { z } from "zod";
 import { Toaster } from "./ui/sonner";
 import { toast } from "sonner";
 import OSMAutocomplete from "@/components/OSMAutocomplete";
+import MapView from "@/components/MapView"; // 🗺️ ADD THIS
 
 const apiUri = import.meta.env.VITE_REACT_API_URI;
 
@@ -67,7 +68,7 @@ const PublishCard = () => {
   };
 
   return (
-    <Card className="w-[350px]">
+    <Card className="w-full max-w-md mx-auto">
       <CardHeader>
         <CardTitle>Create a Ride</CardTitle>
         <CardDescription>Publish your ride with just one click.</CardDescription>
@@ -83,7 +84,7 @@ const PublishCard = () => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="grid w-full items-center gap-4">
 
-            <div className="flex gap-24">
+            <div className="flex gap-4">
               <FormField
                 control={form.control}
                 name="seat"
@@ -156,6 +157,16 @@ const PublishCard = () => {
             <Button type="submit">Publish</Button>
           </form>
         </Form>
+
+        {/* Show map preview */}
+        {origin && destination && (
+          <div className="mt-4">
+            <MapView
+              origin={[origin.lat, origin.lng]}
+              destination={[destination.lat, destination.lng]}
+            />
+          </div>
+        )}
       </CardContent>
       <Toaster />
     </Card>
