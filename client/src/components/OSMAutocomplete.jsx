@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
-const OSMAutocomplete = ({ placeholder, onSelect }) => {
-  const [query, setQuery] = useState("");
+const OSMAutocomplete = ({ placeholder, onSelect, value }) => {
+  const [query, setQuery] = useState(value || "");
   const [suggestions, setSuggestions] = useState([]);
+
+  useEffect(() => {
+    setQuery(value || "");
+  }, [value]);
 
   const handleInputChange = async (e) => {
     const newQuery = e.target.value;
@@ -38,11 +42,11 @@ const OSMAutocomplete = ({ placeholder, onSelect }) => {
     };
     setQuery(place.display_name);
     setSuggestions([]);
-    onSelect(selected);
+    onSelect(selected); // ✅ correctly call parent with selected value
   };
 
   return (
-    <div className="relative">
+    <div className="relative w-full">
       <input
         type="text"
         value={query}
