@@ -10,6 +10,9 @@ import { Form, FormControl, FormField, FormItem } from "./ui/form";
 import { CalendarIcon, Minus, Plus, User } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import OSMAutocomplete from "./OSMAutocomplete"; // 💡 make sure path is correct
+const [originInput, setOriginInput] = useState("");
+const [destinationInput, setDestinationInput] = useState("");
+
 
 const searchSchema = z.object({
   from: z.string(),
