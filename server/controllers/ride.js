@@ -24,36 +24,28 @@ export const getAllRides = async (req, res, next) => {
 }
 
 
-
-export const findRides = async (req, res, next) => {
+ export const findRides = async (req, res, next) => {
   try {
-    const { origin, destination, time, seats } = req.query;
+    const { from, to, seat, date } = req.query;
 
-    const query = {};
-
-    if (origin) {
-      query["origin.place"] = { $regex: origin, $options: "i" };
-    }
-    if (destination) {
-      query["destination.place"] = { $regex: destination, $options: "i" };
-    }
-    if (time) {
-      const selectedTime = new Date(time);
-      const endTime = new Date(selectedTime.getTime() + 2 * 60 * 60 * 1000); // +2 hours
-      query.startTime = {
-        $gte: selectedTime,
-        $lt: endTime
-      };
-    }
-    if (seats) {
-      query.availableSeats = { $gte: parseInt(seats) };
+    if (!from || !to || !seat || !date) {
+      return res.status(400).json({ message: 'Please provide all the details' });
     }
 
-    const rides = await Ride.find(query)
-      .populate("creator", "name profilePicture stars")
-      .lean();
+    const searchDate = new Date(date);
+    searchDate.setHours(0, 0, 0, 0);
 
-    res.status(200).json(rides);
+    const nextDate = new Date(searchDate);
+    nextDate.setDate(searchDate.getDate() + 1);
+
+    const rides = await Ride.find({
+      "origin.place": { $regex: from, $options: "i" },
+      "destination.place": { $regex: to, $options: "i" },
+      "availableSeats": { $gte: parseInt(seat) },
+      "startTime": { $gte: searchDate, $lt: nextDate }
+    }).populate('creator', 'name').lean();
+
+    res.status(200).json({ rides });
   } catch (err) {
     next(err);
   }
