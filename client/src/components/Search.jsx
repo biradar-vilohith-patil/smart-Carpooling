@@ -31,11 +31,24 @@ const Search = () => {
     },
   });
 
-  const onSubmit = async (data) => {
-    await form.handleSubmit((formData) => {
-      setSearchParams(formData, { replace: true });
-    })(data);
-  };
+const onSubmit = async (data) => {
+  await form.handleSubmit((formData) => {
+    // Convert date to yyyy-mm-dd
+    const formattedDate = formData.date.toISOString().split("T")[0];
+
+    // Replace original date with formatted one
+    setSearchParams(
+      {
+        from: formData.from,
+        to: formData.to,
+        seat: formData.seat.toString(), // seat is a number, convert to string
+        date: formattedDate, // this is now yyyy-mm-dd ✅
+      },
+      { replace: true }
+    );
+  })(data);
+};
+
 
   return (
     <Form {...form}>
