@@ -11,7 +11,7 @@ const SearchPage = () => {
   const { search } = useLocation();
   const { from, to, date, seat } = Object.fromEntries(new URLSearchParams(search));
 
-  const { loading, data, error } = useFetch(`rides/find?from=${from}&to=${to}&seat=${seat}&date=${date}`);
+const { loading, data, error } = useFetch(`rides/find?origin=${from}&destination=${to}&time=${date}`);
 
   const rides = data?.rides || []; // fallback to empty array
 
