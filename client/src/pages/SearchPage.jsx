@@ -11,7 +11,9 @@ const SearchPage = () => {
   const { search } = useLocation();
   const { from, to, date, seat } = Object.fromEntries(new URLSearchParams(search));
 
-  const { loading, data } = useFetch(`rides/find?from=${from}&to=${to}&seat=${seat}&date=${date}`);
+  const { loading, data, error } = useFetch(`rides/find?from=${from}&to=${to}&seat=${seat}&date=${date}`);
+
+  const rides = data?.rides || []; // fallback to empty array
 
   return (
     <main>
@@ -26,12 +28,14 @@ const SearchPage = () => {
           </DialogContent>
         </Dialog>
       </div>
+
       <div className="container p-0 max-w-screen-xl grid md:grid-cols-5">
         <div className="hidden md:block">
           <div className="sticky top-16">
             <Sidebar />
           </div>
         </div>
+
         <div className="col-span-3 py-6 md:col-span-4 lg:border-l">
           <div className="container">
             {loading && (
@@ -40,16 +44,25 @@ const SearchPage = () => {
                 <Skeleton className="h-[200px] w-full my-3 p-4 rounded-xl" />
               </>
             )}
-            {data && (
+
+            {!loading && error && (
+              <h3 className="text-red-600 text-xl font-semibold">
+                Error loading rides. Please try again.
+              </h3>
+            )}
+
+            {!loading && !error && (
               <>
                 <h3>
                   {from} <MoveRight className="inline-block" /> {to}
                 </h3>
-                <h3>{data?.rides.length} rides available</h3>
-                {data.rides.length === 0 ? (
-                  <h3 className='text-xl font-semibold'>No rides available based on your search criteria.</h3>
+                <h3>{rides.length} rides available</h3>
+                {rides.length === 0 ? (
+                  <h3 className="text-xl font-semibold">
+                    No rides available based on your search criteria.
+                  </h3>
                 ) : (
-                  data.rides.map((ride) => (
+                  rides.map((ride) => (
                     <Link key={ride._id} to={`/ride/${ride._id}`}>
                       <RideCard details={ride} />
                     </Link>
