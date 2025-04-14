@@ -162,9 +162,9 @@ const PublishCard = () => {
         {origin && destination && (
           <div className="mt-4">
             <MapView
-  origin={origin}
-  destination={destination}
-/>
+              origin={[origin.lat, origin.lng]}
+              destination={[destination.lat, destination.lng]}
+            />
           </div>
         )}
       </CardContent>
