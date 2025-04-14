@@ -1,3 +1,4 @@
+import { useState } from "react";
 import RideCard from '@/components/RideCard';
 import Search from '@/components/Search';
 import Sidebar from '@/components/Sidebar';
@@ -6,7 +7,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import useFetch from '@/hooks/useFetch';
 import { MoveRight, SlidersHorizontal } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
-import { useState } from 'react';
 
 
 const SearchPage = () => {
