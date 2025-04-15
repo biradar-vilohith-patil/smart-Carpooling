@@ -8,6 +8,8 @@ import path from 'path';
 import authRoute from "./routes/auth.routes.js";
 import userRoute from "./routes/user.routes.js";
 import rideRoute from "./routes/ride.routes.js";
+import nominatimRoute from "./routes/nominatim.js"; // << Add this
+  
 
 dotenv.config(); // ✅ load env vars first
 
@@ -50,6 +52,7 @@ app.use(cookieParser());
 app.use(express.json());
 
 // ✅ API Routes
+app.use("/api/nominatim", nominatimRoute);
 app.use("/api/users", userRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/rides", rideRoute);
