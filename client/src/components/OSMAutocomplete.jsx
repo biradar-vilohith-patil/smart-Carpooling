@@ -15,18 +15,14 @@ const OSMAutocomplete = ({ placeholder, onSelect }) => {
     }
 
     try {
-      const res = await axios.get("https://nominatim.openstreetmap.org/search", {
+      const res = await axios.get(`${import.meta.env.VITE_REACT_API_URI}/nominatim/geocode`, {
         params: {
           q: newQuery,
-          format: "json",
-          addressdetails: 1,
-          limit: 5,
-          countrycodes: "in",
         },
       });
       setSuggestions(res.data);
     } catch (err) {
-      console.error("OSM search error:", err);
+      console.error("Proxy search error:", err);
     }
   };
 
