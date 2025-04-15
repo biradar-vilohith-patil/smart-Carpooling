@@ -32,7 +32,6 @@ const connectDB = () => {
 };
 
 // ✅ CORS for frontend on Vercel
-const cors = require('cors');
 const allowedOrigins = process.env.ORIGIN.split(',');
 
 app.use(cors({
