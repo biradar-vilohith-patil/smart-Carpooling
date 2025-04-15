@@ -8,14 +8,16 @@ import useFetch from '@/hooks/useFetch';
 import { MoveRight, SlidersHorizontal } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
-
 const SearchPage = () => {
   const { search } = useLocation();
   const { from, to, date, seat } = Object.fromEntries(new URLSearchParams(search));
 
-const { loading, data, error } = useFetch(`rides/find?origin=${from}&destination=${to}&time=${date}`);
+  // Safety check: only call fetch if all required fields are present
+  const { loading, data, error } = from && to && date
+    ? useFetch(`rides/find?origin=${from}&destination=${to}&time=${date}`)
+    : { loading: false, data: null, error: true };
 
-  const rides = data?.rides || []; // fallback to empty array
+  const rides = data?.rides || [];
 
   return (
     <main>
