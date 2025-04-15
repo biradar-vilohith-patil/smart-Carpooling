@@ -1,84 +1,50 @@
-import { useState } from "react";
-import RideCard from '@/components/RideCard';
-import Search from '@/components/Search';
-import Sidebar from '@/components/Sidebar';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import { Skeleton } from '@/components/ui/skeleton';
-import useFetch from '@/hooks/useFetch';
-import { MoveRight, SlidersHorizontal } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import axios from "axios"
+import { useEffect, useState } from "react"
 
-const SearchPage = () => {
-  const { search } = useLocation();
-  const { from, to, date, seat } = Object.fromEntries(new URLSearchParams(search));
+const baseURL = import.meta.env.VITE_REACT_API_URI;
+// const baseURL = "http://localhost:8080/api";
 
-  // Safety check: only call fetch if all required fields are present
-  const { loading, data, error } = from && to && date
-    ? useFetch(`rides/find?origin=${from}&destination=${to}&time=${date}`)
-    : { loading: false, data: null, error: true };
+const useFetch = (endpoint, includeCredentials = true) => { //edited
+  const [loading, setLoading] = useState(false)
+  const [data, setData] = useState(null)
+  const [error, setError] = useState(null)
 
-  const rides = data?.rides || [];
+  const url = `${baseURL}/${endpoint}`;
 
-  return (
-    <main>
-      <div className="z-10 flex justify-center items-center border-b bg-background p-8">
-        <Search />
-        <Dialog>
-          <DialogTrigger className="md:hidden border border-lg p-2 bg-background absolute right-0">
-            <SlidersHorizontal />
-          </DialogTrigger>
-          <DialogContent>
-            <Sidebar />
-          </DialogContent>
-        </Dialog>
-      </div>
+  useEffect(() => {
+    setLoading(true)
+    const axiosConfig = includeCredentials ? { withCredentials: true } : {};
+    axios
+      .get(url, axiosConfig)
+      .then((response) => {
+        setData(response.data)
+      })
+      .catch((err) => {
+        setError(err.response ? err.response.data : err.message)
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+    
+  }, [url, includeCredentials])
 
-      <div className="container p-0 max-w-screen-xl grid md:grid-cols-5">
-        <div className="hidden md:block">
-          <div className="sticky top-16">
-            <Sidebar />
-          </div>
-        </div>
+  function refetch(){
+    setLoading(true)
+    const axiosConfig = includeCredentials ? { withCredentials: true } : {};
+    axios
+      .get(url, axiosConfig)
+      .then((response) => {
+        setData(response.data)
+      })
+      .catch((err) => {
+        setError(err.response ? err.response.data : err.message)
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }
+  
+  return { data, loading, error, refetch }
+}
 
-        <div className="col-span-3 py-6 md:col-span-4 lg:border-l">
-          <div className="container">
-            {loading && (
-              <>
-                <Skeleton className="h-[200px] w-full my-3 p-4 rounded-xl" />
-                <Skeleton className="h-[200px] w-full my-3 p-4 rounded-xl" />
-              </>
-            )}
-
-            {!loading && error && (
-              <h3 className="text-red-600 text-xl font-semibold">
-                Error loading rides. Please try again.
-              </h3>
-            )}
-
-            {!loading && !error && (
-              <>
-                <h3>
-                  {from} <MoveRight className="inline-block" /> {to}
-                </h3>
-                <h3>{rides.length} rides available</h3>
-                {rides.length === 0 ? (
-                  <h3 className="text-xl font-semibold">
-                    No rides available based on your search criteria.
-                  </h3>
-                ) : (
-                  rides.map((ride) => (
-                    <Link key={ride._id} to={`/ride/${ride._id}`}>
-                      <RideCard details={ride} />
-                    </Link>
-                  ))
-                )}
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-    </main>
-  );
-};
-
-export default SearchPage;
+export default useFetch
