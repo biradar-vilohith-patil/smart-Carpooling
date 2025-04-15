@@ -32,12 +32,19 @@ const connectDB = () => {
 };
 
 // ✅ CORS for frontend on Vercel
+const cors = require('cors');
+const allowedOrigins = process.env.ORIGIN.split(',');
+
 app.use(cors({
-  origin: process.env.ORIGIN, // 💡 use .env to manage CORS origin
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS not allowed'));
+    }
+  },
   credentials: true,
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
 }));
-app.options("*", cors()); // handle preflight
 
 // ✅ Other Middlewares
 app.use(cookieParser());
