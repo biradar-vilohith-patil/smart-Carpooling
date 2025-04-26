@@ -10,12 +10,18 @@ import { Link, useLocation } from 'react-router-dom';
 
 const SearchPage = () => {
   const { search } = useLocation();
-  const { from, to, date, seat } = Object.fromEntries(new URLSearchParams(search));
+  const params = new URLSearchParams(search);
+  const from = params.get("from");
+  const to = params.get("to");
+  const date = params.get("date");
+  const seat = params.get("seat");
 
-  // Safety check: only call fetch if all required fields are present
-  const { loading, data, error } = from && to && date
-    ? useFetch(`rides/find?origin=${from}&destination=${to}&time=${date}`)
-    : { loading: false, data: null, error: true };
+  const [triggerSearch, setTriggerSearch] = useState(false);
+
+  // Only trigger search if valid query params
+  const { loading, data, error } = (from && to && date)
+    ? useFetch(`rides/find?origin=${from}&destination=${to}&time=${date}`, false)
+    : { loading: false, data: null, error: false };
 
   const rides = data?.rides || [];
 
@@ -49,13 +55,13 @@ const SearchPage = () => {
               </>
             )}
 
-            {!loading && error && (
+            {!loading && error && (from && to && date) && (
               <h3 className="text-red-600 text-xl font-semibold">
                 Error loading rides. Please try again.
               </h3>
             )}
 
-            {!loading && !error && (
+            {!loading && !error && (from && to && date) && (
               <>
                 <h3>
                   {from} <MoveRight className="inline-block" /> {to}
