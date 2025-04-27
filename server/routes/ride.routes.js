@@ -1,27 +1,19 @@
-// backend/routes/rides.js
-
 import express from "express";
-import { createRide, deleteRide, getRide, getRides, searchRides, updateRide } from "../controllers/rideController.js";
-import { verifyToken, verifyUser } from "../utils/verifyToken.js";
+import { createRide, findRide, getAllRides, getRideById } from "../controllers/rideController.js";
+import { verifyToken } from "../middlewares/verifyToken.js";
 
 const router = express.Router();
 
-// POST - Create a ride => Needs Login
-router.post("/", verifyUser, createRide);
+// POST => Create a new ride
+router.post("/", verifyToken, createRide);
 
-// GET - Search rides (no login required!)
-router.get("/find", searchRides);
+// GET => Find rides (for search page)
+router.get("/find", findRide);
 
-// GET - All rides
-router.get("/", getRides);
+// GET => Get all rides
+router.get("/", getAllRides);
 
-// GET - Single ride
-router.get("/:id", getRide);
-
-// PUT - Update ride
-router.put("/:id", verifyUser, updateRide);
-
-// DELETE - Delete ride
-router.delete("/:id", verifyUser, deleteRide);
+// GET => Get ride by id
+router.get("/:id", getRideById);
 
 export default router;
