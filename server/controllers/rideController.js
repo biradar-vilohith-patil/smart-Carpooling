@@ -18,8 +18,7 @@ export const createRide = async (req, res, next) => {
 // Search rides (Public route)
 export const searchRides = async (req, res, next) => {
   try {
-    try {
-    const { origin, destination, time } = req.query;
+       const { origin, destination, time } = req.query;
 
     const query = {};
 
@@ -45,23 +44,9 @@ export const searchRides = async (req, res, next) => {
     if (!origin || !destination || !time) {
       return res.status(400).json({ message: "Origin, destination and time are required" });
     }
-}
-
-    const selectedTime = new Date(time);
-
-    const rides = await Ride.find({
-      "origin.place": { $regex: origin.trim(), $options: "i" },
-      "destination.place": { $regex: destination.trim(), $options: "i" },
-      startTime: { $gte: selectedTime }
-    })
-    .populate('creator', 'name profilePicture stars') 
-    .lean();
-
-    res.status(200).json({ rides });
-  } catch (err) {
-    next(err);
-  }
 };
+
+   
 
 // Get all rides
 export const getRides = async (req, res, next) => {
