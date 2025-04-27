@@ -8,10 +8,10 @@ import path from 'path';
 import authRoute from "./routes/auth.routes.js";
 import userRoute from "./routes/user.routes.js";
 import rideRoute from "./routes/ride.routes.js";
-import nominatimRoute from "./routes/nominatim.js"; // << Add this
+import nominatimRoute from "./routes/nominatim.js"; 
   
 
-dotenv.config(); // ✅ load env vars first
+dotenv.config(); 
 
 const app = express();
 const PORT = process.env.PORT || 5000;
