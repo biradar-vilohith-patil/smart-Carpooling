@@ -1,6 +1,6 @@
 import express from "express";
-import { createRide, findRide, getAllRides, getRideById } from "../controllers/rideController.js";
-import { verifyToken } from "../middlewares/verifyToken.js";
+import { createRide, searchRides, getRides, getRide } from "../controllers/rideController.js";
+import { verifyToken } from "../utils/verifyToken.js";
 
 const router = express.Router();
 
@@ -8,12 +8,12 @@ const router = express.Router();
 router.post("/", verifyToken, createRide);
 
 // GET => Find rides (for search page)
-router.get("/find", findRide);
+router.get("/find", searchRide);
 
 // GET => Get all rides
-router.get("/", getAllRides);
+router.get("/", getRides);
 
 // GET => Get ride by id
-router.get("/:id", getRideById);
+router.get("/:id", getRide);
 
 export default router;
