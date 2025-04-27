@@ -8,7 +8,7 @@ const router = express.Router();
 router.post("/", verifyToken, createRide);
 
 // GET => Find rides (for search page)
-router.get("/find", searchRide);
+router.get("/find", searchRides);
 
 // GET => Get all rides
 router.get("/", getRides);
