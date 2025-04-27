@@ -42,4 +42,4 @@ const RideCard = ({details}) => {
   )
 }
 
-export default RideCard
+export default RideCard;
