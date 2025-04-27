@@ -18,11 +18,34 @@ export const createRide = async (req, res, next) => {
 // Search rides (Public route)
 export const searchRides = async (req, res, next) => {
   try {
+    try {
     const { origin, destination, time } = req.query;
+
+    const query = {};
+
+    if (origin) {
+      query["origin.place"] = { $regex: origin, $options: "i" };  // Match partial origin (case-insensitive)
+    }
+
+    if (destination) {
+      query["destination.place"] = { $regex: destination, $options: "i" }; // Match partial destination
+    }
+
+    if (time) {
+      query["startTime"] = { $gte: new Date(time) };  // Rides starting after the selected time
+    }
+
+    const rides = await Ride.find(query);
+
+    res.status(200).json({ rides });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch rides", error: err.message });
+  }
 
     if (!origin || !destination || !time) {
       return res.status(400).json({ message: "Origin, destination and time are required" });
     }
+}
 
     const selectedTime = new Date(time);
 
