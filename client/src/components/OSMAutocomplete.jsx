@@ -2,12 +2,15 @@ import { useState } from "react";
 import axios from "axios";
 
 const OSMAutocomplete = ({ placeholder, onSelect }) => {
-  const [query, setQuery] = useState("");
+  // Set the initial state for the input value as an object
+  const [query, setQuery] = useState({ address: "", lat: null, lng: null });
   const [suggestions, setSuggestions] = useState([]);
 
   const handleInputChange = async (e) => {
     const newQuery = e.target.value;
-    setQuery(newQuery);
+    
+    // Update only the address part of the state
+    setQuery(prev => ({ ...prev, address: newQuery }));
 
     if (!newQuery) {
       setSuggestions([]);
@@ -15,6 +18,7 @@ const OSMAutocomplete = ({ placeholder, onSelect }) => {
     }
 
     try {
+      // Make the request to Nominatim API to get suggestions
       const res = await axios.get("https://nominatim.openstreetmap.org/search", {
         params: {
           q: newQuery,
@@ -25,7 +29,7 @@ const OSMAutocomplete = ({ placeholder, onSelect }) => {
         },
         headers: {
           'Accept-Language': 'en',
-          'User-Agent': 'SmartCarpoolingApp/1.0 (your-email@example.com)',  // <--- Important line
+          'User-Agent': 'SmartCarpoolingApp/1.0 (your-email@example.com)',  // Important for OSM
         }
       });
 
@@ -41,8 +45,14 @@ const OSMAutocomplete = ({ placeholder, onSelect }) => {
       lat: parseFloat(place.lat),
       lng: parseFloat(place.lon),
     };
-    setQuery(place.display_name);
+
+    // Update query with full object
+    setQuery(selected);
+
+    // Clear suggestions after selection
     setSuggestions([]);
+
+    // Pass the selected place to the parent component
     onSelect(selected);
   };
 
@@ -50,7 +60,7 @@ const OSMAutocomplete = ({ placeholder, onSelect }) => {
     <div className="relative">
       <input
         type="text"
-        value={query}
+        value={query.address}  // Display the address part in the input field
         placeholder={placeholder}
         className="border p-2 rounded w-full"
         onChange={handleInputChange}
@@ -61,7 +71,7 @@ const OSMAutocomplete = ({ placeholder, onSelect }) => {
             <li
               key={index}
               className="px-2 py-1 hover:bg-gray-100 cursor-pointer"
-              onClick={() => handleSelect(place)}
+              onClick={() => handleSelect(place)}  // Handle selection of place
             >
               {place.display_name}
             </li>
