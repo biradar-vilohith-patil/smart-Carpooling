@@ -10,20 +10,14 @@ import { Link, useLocation } from 'react-router-dom';
 
 const SearchPage = () => {
   const { search } = useLocation();
-  const params = new URLSearchParams(search);
-  const from = params.get("from");
-  const to = params.get("to");
-  const date = params.get("date");
-  const seat = params.get("seat");
+  const { from, to, date, seat } = Object.fromEntries(new URLSearchParams(search));
 
-  const [triggerSearch, setTriggerSearch] = useState(false);
+  // Safety check: only call fetch if all required fields are present
+  const { loading, data, error } = from && to && date
+    ? useFetch(`rides/find?origin=${from}&destination=${to}&time=${date}`)
+    : { loading: false, data: null, error: true };
 
-  // Only trigger search if valid query params
-  const { loading, data, error } = (from && to && date)
-    ? useFetch(`rides/find?origin=${from}&destination=${to}&time=${date}`, false)
-    : { loading: false, data: null, error: false };
-
-  const rides = data?.rides || [];
+  const rides = data?.rides || []; // fallback to empty array
 
   return (
     <main>
@@ -55,28 +49,31 @@ const SearchPage = () => {
               </>
             )}
 
-            {!loading && error && (from && to && date) && (
+            {!loading && error && (
               <h3 className="text-red-600 text-xl font-semibold">
                 Error loading rides. Please try again.
               </h3>
             )}
 
-            {!loading && !error && (from && to && date) && (
+            {!loading && !error && (
               <>
-                <h3>
+                <h3 className="text-lg font-semibold mb-4">
                   {from} <MoveRight className="inline-block" /> {to}
                 </h3>
-                <h3>{rides.length} rides available</h3>
-                {rides.length === 0 ? (
-                  <h3 className="text-xl font-semibold">
+
+                {Array.isArray(rides) && rides.length > 0 ? (
+                  <>
+                    <h3 className="text-md font-semibold mb-2">{rides.length} rides available</h3>
+                    {rides.map((ride) => (
+                      <Link key={ride._id} to={`/ride/${ride._id}`}>
+                        <RideCard details={ride} />
+                      </Link>
+                    ))}
+                  </>
+                ) : (
+                  <h3 className="text-xl font-semibold mt-6">
                     No rides available based on your search criteria.
                   </h3>
-                ) : (
-                  rides.map((ride) => (
-                    <Link key={ride._id} to={`/ride/${ride._id}`}>
-                      <RideCard details={ride} />
-                    </Link>
-                  ))
                 )}
               </>
             )}
