@@ -111,9 +111,9 @@ const Profile = () => {
               </div>
               <div className="flex justify-center items-start flex-col space-y-4 mt-8">
                 <h3 className="text-base font-semibold leading-4 text-center md:text-left">Preferences</h3>
-                <p className="text-sm text-muted-foreground">{data?.profile.preferences?.music}</p>
-                <p className="text-sm text-muted-foreground">{data?.profile.preferences?.smoking}</p>
-                <p className="text-sm text-muted-foreground">{data?.profile.preferences?.petFriendly}</p>
+                <p className="text-sm text-muted-foreground">music:{data?.profile.preferences?.music}</p>
+                <p className="text-sm text-muted-foreground">smoking{data?.profile.preferences?.smoking}</p>
+                <p className="text-sm text-muted-foreground">Gender{data?.profile.preferences?.petFriendly}</p>
               </div>
             </>
             :
