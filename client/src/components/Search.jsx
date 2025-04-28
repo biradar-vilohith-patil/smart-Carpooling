@@ -67,7 +67,7 @@ const onSubmit = async (data) => {
               <FormItem className="flex items-center">
                 <OSMAutocomplete
                   placeholder="From"
-                  onSelect={(data) => field.onChange(data.address)}
+                  onSelect={(selected) => field.onChange(selected.address)}
                 />
               </FormItem>
             )}
@@ -83,7 +83,7 @@ const onSubmit = async (data) => {
               <FormItem className="flex items-center">
                 <OSMAutocomplete
                   placeholder="To"
-                  onSelect={(data) => field.onChange(data.address)}
+                  onSelect={(selected) => field.onChange(selected.address)}
                 />
               </FormItem>
             )}
