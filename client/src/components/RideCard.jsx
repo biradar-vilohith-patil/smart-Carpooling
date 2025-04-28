@@ -1,3 +1,4 @@
+
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 const RideCard = ({details}) => {
@@ -42,4 +43,4 @@ const RideCard = ({details}) => {
   )
 }
 
-export default RideCard;
+export default RideCard
