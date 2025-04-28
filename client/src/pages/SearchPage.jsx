@@ -1,23 +1,53 @@
-import { useState } from "react";
-import RideCard from '@/components/RideCard';
-import Search from '@/components/Search';
-import Sidebar from '@/components/Sidebar';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import { Skeleton } from '@/components/ui/skeleton';
-import useFetch from '@/hooks/useFetch';
-import { MoveRight, SlidersHorizontal } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { useLocation, Link } from "react-router-dom";
+import Search from "@/components/Search";
+import Sidebar from "@/components/Sidebar";
+import RideCard from "@/components/RideCard";
+import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
+import { Skeleton } from "@/components/ui/skeleton";
+import { SlidersHorizontal, MoveRight } from "lucide-react";
+import axios from "axios";
 
 const SearchPage = () => {
   const { search } = useLocation();
-  const { from, to, date, seat } = Object.fromEntries(new URLSearchParams(search));
+  const [rides, setRides] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
-  const shouldFetch = from && to && date;
-  const { loading, data, error } = useFetch(
-    shouldFetch ? `rides/find?origin=${from}&destination=${to}&time=${date}` : null
-  );
+  const queryParams = new URLSearchParams(search);
+  const from = queryParams.get("from");
+  const to = queryParams.get("to");
+  const date = queryParams.get("date");
 
-  const rides = data?.rides || [];
+  useEffect(() => {
+    const fetchRides = async () => {
+      if (!from || !to || !date) {
+        setError(true);
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_REACT_API_URI}/rides/find`, {
+          params: {
+            origin: from,
+            destination: to,
+            time: date,
+          },
+          withCredentials: true,
+        });
+        setRides(res.data.rides);
+        setError(false);
+      } catch (err) {
+        console.error("Error fetching rides:", err);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRides();
+  }, [from, to, date]);
 
   return (
     <main>
@@ -48,13 +78,11 @@ const SearchPage = () => {
                 <Skeleton className="h-[200px] w-full my-3 p-4 rounded-xl" />
               </>
             )}
-
             {!loading && error && (
               <h3 className="text-red-600 text-xl font-semibold">
                 Error loading rides. Please try again.
               </h3>
             )}
-
             {!loading && !error && (
               <>
                 <h3>
