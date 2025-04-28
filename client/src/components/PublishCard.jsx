@@ -4,14 +4,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
-import { Minus, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Toaster } from "./ui/sonner";
 import { toast } from "sonner";
 import OSMAutocomplete from "@/components/OSMAutocomplete";
-import MapView from "@/components/MapView"; // 🗺️ ADD THIS
+import MapView from "@/components/MapView"; // if you have map feature
+import axios from "axios";
+import { Minus, Plus } from "lucide-react";
 
 const apiUri = import.meta.env.VITE_REACT_API_URI;
 
@@ -38,7 +38,7 @@ const PublishCard = () => {
 
   const onSubmit = async (data) => {
     if (!origin || !destination) {
-      toast("Please select both origin and destination");
+      toast.error("Please select both Origin and Destination!");
       return;
     }
 
@@ -57,40 +57,51 @@ const PublishCard = () => {
         endTime: data.endTime,
         price: data.price
       };
+
       await axios.post(`${apiUri}/rides`, body, { withCredentials: true });
-      toast("The ride has been created");
+
+      toast.success("Ride published successfully!");
       form.reset();
       setOrigin(null);
       setDestination(null);
     } catch (error) {
-      console.error("POST request failed:", error);
+      console.error("Ride publish failed:", error);
+      toast.error("Failed to publish ride. Try again.");
     }
   };
 
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
-        <CardTitle>Create a Ride</CardTitle>
-        <CardDescription>Publish your ride with just one click.</CardDescription>
+        <CardTitle>Offer a Ride</CardTitle>
+        <CardDescription>Share your ride with others!</CardDescription>
       </CardHeader>
       <CardContent>
 
-        {/* Autocomplete inputs */}
+        {/* Location Inputs */}
         <div className="space-y-2 mb-4">
-          <OSMAutocomplete placeholder="Enter Origin" onSelect={setOrigin} />
-          <OSMAutocomplete placeholder="Enter Destination" onSelect={setDestination} />
+          <OSMAutocomplete placeholder="Enter Origin" onSelect={(selected) => setOrigin(selected)} />
+          <OSMAutocomplete placeholder="Enter Destination" onSelect={(selected) => setDestination(selected)} />
         </div>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="grid w-full items-center gap-4">
+        {/* Show Map Preview if Needed */}
+        {origin && destination && (
+          <div className="my-4">
+            <MapView origin={[origin.lat, origin.lng]} destination={[destination.lat, destination.lng]} />
+          </div>
+        )}
 
-            <div className="flex gap-4">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
+
+            {/* Seat Count */}
+            <div className="flex gap-6">
               <FormField
                 control={form.control}
                 name="seat"
                 render={({ field }) => (
-                  <FormItem className="flex flex-col space-y-1.5">
-                    <FormLabel>Available seats</FormLabel>
+                  <FormItem>
+                    <FormLabel>Available Seats</FormLabel>
                     <FormControl>
                       <div className="flex gap-2 items-center">
                         <Button variant="outline" size="icon" type="button" onClick={() => field.value > 1 && field.onChange(field.value - 1)}>
@@ -107,14 +118,20 @@ const PublishCard = () => {
                 )}
               />
 
+              {/* Price */}
               <FormField
                 control={form.control}
                 name="price"
                 render={({ field }) => (
-                  <FormItem className="flex flex-col space-y-1.5">
+                  <FormItem>
                     <FormLabel>Price</FormLabel>
                     <FormControl>
-                      <Input placeholder="Price" min="0" {...field} onChange={(e) => field.onChange(Number(e.target.value))} />
+                      <Input
+                        type="number"
+                        placeholder="Price"
+                        {...field}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -122,51 +139,49 @@ const PublishCard = () => {
               />
             </div>
 
+            {/* Departure Time */}
             <FormField
               control={form.control}
               name="startTime"
               render={({ field }) => (
-                <FormItem className="flex flex-col space-y-1.5">
+                <FormItem>
                   <FormLabel>Departure Time</FormLabel>
                   <FormControl>
-                    <Input type="datetime-local"
+                    <Input
+                      type="datetime-local"
                       value={field.value ? new Date(field.value).toISOString().slice(0, 16) : ""}
-                      onChange={(e) => field.onChange(new Date(e.target.value))} />
+                      onChange={(e) => field.onChange(new Date(e.target.value))}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
+            {/* Arrival Time */}
             <FormField
               control={form.control}
               name="endTime"
               render={({ field }) => (
-                <FormItem className="flex flex-col space-y-1.5">
+                <FormItem>
                   <FormLabel>Arrival Time</FormLabel>
                   <FormControl>
-                    <Input type="datetime-local"
+                    <Input
+                      type="datetime-local"
                       value={field.value ? new Date(field.value).toISOString().slice(0, 16) : ""}
-                      onChange={(e) => field.onChange(new Date(e.target.value))} />
+                      onChange={(e) => field.onChange(new Date(e.target.value))}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <Button type="submit">Publish</Button>
+            {/* Submit */}
+            <Button type="submit" className="w-full">Publish Ride</Button>
           </form>
         </Form>
 
-        {/* Show map preview */}
-        {origin && destination && (
-          <div className="mt-4">
-            <MapView
-              origin={[origin.lat, origin.lng]}
-              destination={[destination.lat, destination.lng]}
-            />
-          </div>
-        )}
       </CardContent>
       <Toaster />
     </Card>
