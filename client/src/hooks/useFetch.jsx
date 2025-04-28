@@ -1,50 +1,33 @@
-import axios from "axios"
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const baseURL = import.meta.env.VITE_REACT_API_URI;
-// const baseURL = "http://localhost:8080/api";
 
-const useFetch = (endpoint, includeCredentials = true) => { //edited
-  const [loading, setLoading] = useState(false)
-  const [data, setData] = useState(null)
-  const [error, setError] = useState(null)
-
-  const url = `${baseURL}/${endpoint}`;
+const useFetch = (endpoint) => {
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    setLoading(true)
-    const axiosConfig = includeCredentials ? { withCredentials: true } : {};
-    axios
-      .get(url, axiosConfig)
-      .then((response) => {
-        setData(response.data)
-      })
-      .catch((err) => {
-        setError(err.response ? err.response.data : err.message)
-      })
-      .finally(() => {
-        setLoading(false)
-      })
-    
-  }, [url, includeCredentials])
+    if (!endpoint) return;  // Important: don't fetch if endpoint is null
 
-  function refetch(){
-    setLoading(true)
-    const axiosConfig = includeCredentials ? { withCredentials: true } : {};
-    axios
-      .get(url, axiosConfig)
-      .then((response) => {
-        setData(response.data)
-      })
-      .catch((err) => {
-        setError(err.response ? err.response.data : err.message)
-      })
-      .finally(() => {
-        setLoading(false)
-      })
-  }
-  
-  return { data, loading, error, refetch }
-}
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const res = await axios.get(`${baseURL}/${endpoint}`, { withCredentials: true });
+        setData(res.data);
+        setError(false);
+      } catch (err) {
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-export default useFetch
+    fetchData();
+  }, [endpoint]);
+
+  return { loading, data, error };
+};
+
+export default useFetch;
