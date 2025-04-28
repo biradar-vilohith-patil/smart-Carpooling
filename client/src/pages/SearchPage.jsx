@@ -12,12 +12,12 @@ const SearchPage = () => {
   const { search } = useLocation();
   const { from, to, date, seat } = Object.fromEntries(new URLSearchParams(search));
 
-  // Safety check: only call fetch if all required fields are present
-  const { loading, data, error } = from && to && date
-    ? useFetch(`rides/find?origin=${from}&destination=${to}&time=${date}`)
-    : { loading: false, data: null, error: true };
+  const shouldFetch = from && to && date;
+  const { loading, data, error } = useFetch(
+    shouldFetch ? `rides/find?origin=${from}&destination=${to}&time=${date}` : null
+  );
 
-  const rides = data?.rides || []; // fallback to empty array
+  const rides = data?.rides || [];
 
   return (
     <main>
@@ -57,23 +57,20 @@ const SearchPage = () => {
 
             {!loading && !error && (
               <>
-                <h3 className="text-lg font-semibold mb-4">
+                <h3>
                   {from} <MoveRight className="inline-block" /> {to}
                 </h3>
-
-                {Array.isArray(rides) && rides.length > 0 ? (
-                  <>
-                    <h3 className="text-md font-semibold mb-2">{rides.length} rides available</h3>
-                    {rides.map((ride) => (
-                      <Link key={ride._id} to={`/ride/${ride._id}`}>
-                        <RideCard details={ride} />
-                      </Link>
-                    ))}
-                  </>
-                ) : (
-                  <h3 className="text-xl font-semibold mt-6">
+                <h3>{rides.length} rides available</h3>
+                {rides.length === 0 ? (
+                  <h3 className="text-xl font-semibold">
                     No rides available based on your search criteria.
                   </h3>
+                ) : (
+                  rides.map((ride) => (
+                    <Link key={ride._id} to={`/ride/${ride._id}`}>
+                      <RideCard details={ride} />
+                    </Link>
+                  ))
                 )}
               </>
             )}
