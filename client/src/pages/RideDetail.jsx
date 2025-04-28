@@ -1,51 +1,82 @@
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import { MapPin, Clock, DollarSign, User } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MapPin, Clock, User, DollarSign, ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
 
-const RideCard = ({ details }) => {
+const RideDetail = () => {
+  const { rideId } = useParams();
+  const [ride, setRide] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const apiUrl = import.meta.env.VITE_REACT_API_URI;
+
+  useEffect(() => {
+    const fetchRide = async () => {
+      try {
+        const res = await axios.get(`${apiUrl}/rides/${rideId}`, { withCredentials: true });
+        setRide(res.data);
+      } catch (err) {
+        console.error("Error fetching ride details:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRide();
+  }, [rideId]);
+
+  if (loading) return <div className="text-center mt-8">Loading ride details...</div>;
+  if (!ride) return <div className="text-center mt-8">Ride not found.</div>;
+
   return (
-    <Card className="w-full my-4">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-lg font-bold">{details.origin} ➔ {details.destination}</CardTitle>
-      </CardHeader>
+    <div className="flex justify-center p-6">
+      <Card className="w-full max-w-2xl">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold">
+            {ride.origin.place} ➔ {ride.destination.place}
+          </CardTitle>
+        </CardHeader>
 
-      <CardContent className="grid grid-cols-2 gap-4">
-        <div className="flex items-center">
-          <MapPin className="mr-2" />
-          <span>From: {details.origin}</span>
-        </div>
-        <div className="flex items-center">
-          <MapPin className="mr-2" />
-          <span>To: {details.destination}</span>
-        </div>
-        <div className="flex items-center">
-          <Clock className="mr-2" />
-          <span>Departure: {new Date(details.departureTime).toLocaleString()}</span>
-        </div>
-        <div className="flex items-center">
-          <Clock className="mr-2" />
-          <span>Arrival: {new Date(details.arrivalTime).toLocaleString()}</span>
-        </div>
-        <div className="flex items-center">
-          <User className="mr-2" />
-          <span>Seats Available: {details.availableSeats}</span>
-        </div>
-        <div className="flex items-center">
-          <DollarSign className="mr-2" />
-          <span>Price: ₹{details.price}</span>
-        </div>
-      </CardContent>
+        <CardContent className="space-y-4">
+          <div className="flex items-center">
+            <MapPin className="mr-2" />
+            <span>From: {ride.origin.place}</span>
+          </div>
+          <div className="flex items-center">
+            <MapPin className="mr-2" />
+            <span>To: {ride.destination.place}</span>
+          </div>
+          <div className="flex items-center">
+            <Clock className="mr-2" />
+            <span>Departure Time: {new Date(ride.startTime).toLocaleString()}</span>
+          </div>
+          <div className="flex items-center">
+            <Clock className="mr-2" />
+            <span>Arrival Time: {new Date(ride.endTime).toLocaleString()}</span>
+          </div>
+          <div className="flex items-center">
+            <User className="mr-2" />
+            <span>Available Seats: {ride.availableSeats}</span>
+          </div>
+          <div className="flex items-center">
+            <DollarSign className="mr-2" />
+            <span>Price per seat: ₹{ride.price}</span>
+          </div>
 
-      <div className="flex justify-end p-4">
-        <Link to={`/ride/${details._id}`}>
-          <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded flex items-center">
-            Join Now
-            <ArrowRight className="ml-2" />
-          </button>
-        </Link>
-      </div>
-    </Card>
+          {/* 🚗 Book Seat Button */}
+          <div className="flex justify-center mt-6">
+            <button
+              className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-lg"
+              onClick={() => alert('Seat booked successfully! 🚗')}
+            >
+              Book Seat
+            </button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
-export default RideCard;
+export default RideDetail;
