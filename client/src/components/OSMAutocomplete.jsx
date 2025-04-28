@@ -9,7 +9,7 @@ const OSMAutocomplete = ({ placeholder, onSelect }) => {
     const newQuery = e.target.value;
     setQuery(newQuery);
 
-    if (!newQuery.trim()) {
+    if (!newQuery) {
       setSuggestions([]);
       return;
     }
@@ -21,12 +21,11 @@ const OSMAutocomplete = ({ placeholder, onSelect }) => {
           format: "json",
           addressdetails: 1,
           limit: 5,
-          countrycodes: "in", // Restrict to India
+          countrycodes: "in",
         },
         headers: {
-          "Accept-Language": "en",
-          "User-Agent": "SmartCarpoolingApp/1.0 (your-email@example.com)", // Required header for Nominatim
-        },
+          'Accept-Language': 'en',
+        }
       });
 
       setSuggestions(res.data);
