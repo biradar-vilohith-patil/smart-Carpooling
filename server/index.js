@@ -39,27 +39,10 @@ const allowedOrigins = [
   'https://smartcarpooling.vercel.app'
 ];
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('CORS not allowed'));
-      }
-    },
-    credentials: true,
-  })
-);
-
-app.get('/rides', async (req, res) => {
-  try {
-    const rides = await Ride.find();
-    res.json({ rides });
-  } catch (err) {
-    res.status(500).send('Error fetching rides');
-  }
-});
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true,
+}));
 
 // ✅ Other Middlewares
 app.use(cookieParser());
